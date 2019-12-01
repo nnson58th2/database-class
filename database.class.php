@@ -21,6 +21,7 @@
 
       // connect to mysql
       $this->connect();
+      $this->connection->set_charset("utf8");
     }
 
     protected function connect() {
@@ -93,8 +94,29 @@
       return $this->statement->affected_rows;
     }
 
-    public function update() {
+    public function updateRow($id, $data = []) {
 
+      // create set fields string
+      $keyValues = [];
+      foreach ($data as $key => $value) {
+        $keyValues[] = $key .'=?';
+
+      }
+      $setFields = implode(',', $keyValues);
+      
+      // get values
+      $values = array_values($data);
+      $values[] = $id;
+
+      $sql = "UPDATE $this->table SET $setFields WHERE id = ?";
+      $this->statement = $this->connection->prepare($sql);
+      $dataTypes = str_repeat('s', count($data)) .'i';
+      $this->statement->bind_param($dataTypes, ...$values);
+      $this->statement->execute();
+
+      $this->resetQuery();
+
+      return $this->statement->affected_rows;
     }
 
     public function deleteId($id) {
@@ -104,7 +126,7 @@
       $this->statement->execute();
 
       $this->resetQuery();
-      
+
       return $this->statement->affected_rows;
     }
   }

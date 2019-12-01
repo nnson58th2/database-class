@@ -14,13 +14,13 @@
 
   $db = new Database($config);
 
-  $posts = $db->table('posts')
-              ->limit(10)
-              ->get();
-              
-  foreach($posts as $post) {
-    echo $post->Title .'<br />';
-  }
+  // $posts = $db->table('posts')
+  //             ->limit(10)
+  //             ->get();
+
+  // foreach($posts as $post) {
+  //   echo $post->Title .'<br />';
+  // }
 
   // // Insert
   // $db->table('posts')
@@ -31,4 +31,13 @@
 
   // // Delete
   // $db->table('posts')->deleteId(6);
+
+  $posts = $db->table('posts')
+              ->updateRow(
+                  7,
+                  [
+                    'title' => 'CodersX',
+                    'content' => 'Chào mừng bạn đến với Coders X'
+                  ] 
+                );
 ?>
