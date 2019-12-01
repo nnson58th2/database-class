@@ -14,13 +14,21 @@
 
   $db = new Database($config);
 
-  // Insert
-  $db->table('posts')
-      ->insert([
-        'title' => 'Bai viet 1',
-        'content' => 'Noi dung bai viet 1'
-      ]);
+  $posts = $db->table('posts')
+              ->limit(10)
+              ->get();
+              
+  foreach($posts as $post) {
+    echo $post->Title .'<br />';
+  }
 
-  // Delete
-  $db->table('posts')->deleteId(6);
+  // // Insert
+  // $db->table('posts')
+  //     ->insert([
+  //       'title' => 'Bai viet 1',
+  //       'content' => 'Noi dung bai viet 1'
+  //     ]);
+
+  // // Delete
+  // $db->table('posts')->deleteId(6);
 ?>

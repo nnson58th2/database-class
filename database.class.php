@@ -4,6 +4,9 @@
     protected $table = '';
     protected $statement = null;
 
+    protected $limit = 15;
+    protected $offset = 0;
+
     protected $host = '';
     protected $user = '';
     protected $pass = '';
@@ -38,8 +41,38 @@
       return $this;
     }
 
-    public function get() {
+    public function limit($limit) {
+      $this->limit = $limit;
+      return $this;
+    }
 
+    public function offset($offset) {
+      $this->offset = $offset;
+      return $this;
+    }
+
+    public function resetQuery() {
+      $this->table = '';
+      $this->limit = 15;
+      $this->offset = 0;
+    }
+
+    public function get() {
+      $sql = "SELECT * FROM $this->table LIMIT ? OFFSET ?";
+      
+      $this->statement = $this->connection->prepare($sql);
+      $this->statement->bind_param('ii', $this->limit, $this->offset);
+      $this->statement->execute();
+
+      $this->resetQuery();
+
+      $result = $this->statement->get_result();
+      $returnData = [];
+      while ($row = $result->fetch_object()) {
+        $returnData[] = $row; 
+      }
+      
+      return $returnData;
     }
 
     public function insert($data = []) {
@@ -54,6 +87,9 @@
       $this->statement = $this->connection->prepare($sql);
       $this->statement->bind_param(str_repeat('s', count($data)), ...$values);
       $this->statement->execute();
+
+      $this->resetQuery();
+
       return $this->statement->affected_rows;
     }
 
@@ -66,6 +102,9 @@
       $this->statement = $this->connection->prepare($sql);
       $this->statement->bind_param('i', $id);
       $this->statement->execute();
+
+      $this->resetQuery();
+      
       return $this->statement->affected_rows;
     }
   }
