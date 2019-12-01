@@ -62,7 +62,11 @@
     }
 
     public function deleteId($id) {
-      
+      $sql = "DELETE FROM $this->table WHERE id = ?";
+      $this->statement = $this->connection->prepare($sql);
+      $this->statement->bind_param('i', $id);
+      $this->statement->execute();
+      return $this->statement->affected_rows;
     }
   }
 ?>

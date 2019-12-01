@@ -20,4 +20,7 @@
         'title' => 'Bai viet 1',
         'content' => 'Noi dung bai viet 1'
       ]);
+
+  // Delete
+  $db->table('posts')->deleteId(6);
 ?>
